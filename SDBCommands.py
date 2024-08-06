@@ -51,8 +51,11 @@ class Commands( commands.Cog ):
 		if number <= 0:
 			number = 1
 
+		if number > 100:
+			number = 100
+
 		if number == 1:
-			await ctx.send( f"J'ai lancé un D{type}, il est tombé sur **{random.randint( 0, type )}**!" )
+			await ctx.send( f"J'ai lancé un D{type}, il est tombé sur **{random.randint( 1, type )}**!" )
 			return
 
 		max_result = number * type
@@ -61,7 +64,7 @@ class Commands( commands.Cog ):
 		total_score: int = 0
 
 		for launch in range( 1, number + 1 ):
-			dice_result = random.randint( 0, type )
+			dice_result = random.randint( 1, type )
 			total_score += dice_result
 			launch_detail += f"Lancé {launch}: **{dice_result}**\n"
 
