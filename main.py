@@ -1,6 +1,5 @@
 import discord
 from SirDanBot import SirDan
-import SDBCommands
 
 sir_dan_intents = discord.Intents.default()
 sir_dan_intents.message_content = True

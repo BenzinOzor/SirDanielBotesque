@@ -1,6 +1,7 @@
+import json
 import discord
 from discord.ext import commands
-from SirDanBot import SirDan
+from IsThereAnyDeal.Client import IsThereAnyDeal
 import logging
 # testing
 import random
@@ -11,6 +12,7 @@ import random
 class Commands( commands.Cog ):
 	def __init__( self, _bot: commands.Bot ):
 		self.bot = _bot
+		self.m_log = logging.getLogger( "SDB - Sir Dan" )
 
 	# ---------------------------------
 	# Simple test command
@@ -20,13 +22,44 @@ class Commands( commands.Cog ):
 		await ctx.send( "pong" )
 
 	# ---------------------------------
-	# Generate a Is There Any Deal search link from given game name
+	# Generate a Is There Any Deal result from given game name
 	# ---------------------------------
 	@commands.command()
 	async def deal( self, ctx: commands.Context, *_game ):
-		game_name = " ".join( _game ).title()
-		link_end = "+".join( _game )
-		await ctx.send( f"Recherche Is There Any Deal: **[{ game_name }](<https://isthereanydeal.com/search/?q={ link_end }>)**")
+		game_name = " ".join( _game )
+
+		file = open( "config.json" )
+		json_data: dict = json.load( file )
+		itad = IsThereAnyDeal()
+		itad.load_config(json_data)
+
+		result = itad.find_games_deals(game_name)
+		if result.total_games == 0 or result.game is None:
+			await ctx.send(f"Désolé, je n'ai pas pu trouver d'informations sur \"{game_name}\".")
+			return
+
+		# Build embed
+		msg = f"Voici les informations que j'ai pu trouver sur \"{game_name}\"."
+		descr = "Aucun prix n'est associé à ce jeu."
+		if result.prices is not None:
+			descr = f"""Meilleur prix : **{result.prices.current} {result.prices.currency}** ({result.prices.cut}%)
+			Prix normal : **{result.prices.regular} {result.prices.currency}**
+			Meilleur prix historique : **{result.prices.lowest} {result.prices.currency}**
+			"""
+
+		if result.total_games > 1:
+			msg += f"\r\nD'autres résultats sont disponibles, suivez [la recherche]({IsThereAnyDeal.get_search_url(game_name)})."
+
+		embed = discord.Embed(
+			title=result.game.title,
+			description=descr,
+			type="rich",
+			url=IsThereAnyDeal.get_game_url(result.game.slug))
+		
+		embed.set_image(url=result.game.assets.get("banner600", ""))\
+			.set_author(name="IsThereAnyDeal", url="https://isthereanydeal.com")
+
+		await ctx.send(msg, embed=embed)
 
 	# ---------------------------------
 	# Toss a coin

@@ -1,0 +1,13 @@
+{
+    "Token": "abcdefgh123",
+    "BeReal": {
+        "Role": 0,
+        "MinTime": "22:00:00",
+        "MaxTime": "22:00:00",
+        "DateTime": "2025-01-01 12:00:00"
+    },
+    "IsThereAnyDeal": {
+        "ApiKey": "abcdefgh123",
+        "BaseUrl": "https://api.isthereanydeal.com"
+    }
+}
