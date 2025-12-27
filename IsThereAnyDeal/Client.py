@@ -15,12 +15,13 @@ CFG_APIKEY = 'ApiKey'
 class IsThereAnyDeal:
     def __init__(self) -> None:
         self.m_log = logging.getLogger("SDB - IsThereAnyDeal")
+        self.m_has_valid_config = False
 
 # CONFIG FILE ----------------------------------------------------------------
     def load_config( self, _json: dict ):
         if CFG_ISTHEREANYDEAL not in _json:
             self.m_log.error(f"No {CFG_ISTHEREANYDEAL} section found in config file")
-            raise Exception(f"No {CFG_ISTHEREANYDEAL} section found in config file")
+            return
         
         config = _json[CFG_ISTHEREANYDEAL]
         if CFG_APIKEY in config:
@@ -29,7 +30,12 @@ class IsThereAnyDeal:
         if CFG_BASEURL in config:
             self.m_baseUrl = config[CFG_BASEURL]
 
+        self.m_has_valid_config = True
+
     def save_config( self, _json_data: dict ):
+        if not self.m_has_valid_config:
+            return
+
         _json_data[ CFG_ISTHEREANYDEAL ] = {
             CFG_APIKEY: self.m_apiKey,
             CFG_BASEURL: self.m_baseUrl,
@@ -85,7 +91,6 @@ class IsThereAnyDeal:
         results = requests.post(f"{self.m_baseUrl}/games/overview/v2", params=params, json=data)
 
         return ITADPricesOverview.from_dict(results.json())
-        
 
     @staticmethod
     def get_game_url( _slug: str ):
