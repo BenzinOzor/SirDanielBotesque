@@ -2,6 +2,7 @@ import json
 import discord
 from discord.ext import commands
 from IsThereAnyDeal.Client import IsThereAnyDeal
+from SirDanBot import CONFIG_FILE
 import logging
 # testing
 import random
@@ -28,10 +29,14 @@ class Commands( commands.Cog ):
 	async def deal( self, ctx: commands.Context, *_game ):
 		game_name = " ".join( _game )
 
-		file = open( "config.json" )
+		file = open( CONFIG_FILE )
 		json_data: dict = json.load( file )
 		itad = IsThereAnyDeal()
 		itad.load_config(json_data)
+
+		if not itad.m_has_valid_config:
+			self.m_log.error("Can't respond to the command, the client is not configured correctly")
+			return
 
 		result = itad.find_games_deals(game_name)
 		if result.total_games == 0 or result.game is None:
