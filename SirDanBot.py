@@ -3,6 +3,7 @@ from discord.ext import commands
 import json
 import logging
 from BeReal import BeReal
+from IsThereAnyDeal.Client import IsThereAnyDeal
 from datetime import date
 from datetime import time
 
@@ -33,10 +34,11 @@ class SirDan( commands.Bot ):
 		self.m_bereal = BeReal()
 		self.m_bereal.load_config( json_data )
 
+		self.m_itad = IsThereAnyDeal()
+		self.m_itad.load_config( json_data )
+
 		file.close()
 		self.save_bot_config()
-
-
 
 	def save_bot_config( self ):
 		with open( CONFIG_FILE, "w" ) as outfile:
@@ -44,6 +46,7 @@ class SirDan( commands.Bot ):
 			bot_config = {}
 			bot_config[ CFG_TOKEN ] = self.m_token
 			self.m_bereal.save_config( bot_config )
+			self.m_itad.save_config( bot_config )
 
 			outfile.write( json.dumps( bot_config, sort_keys = False, indent = 4 ) )
 
