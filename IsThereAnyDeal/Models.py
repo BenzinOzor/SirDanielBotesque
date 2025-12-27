@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Dict, Any
 
 @dataclass
@@ -20,25 +20,31 @@ class ITADGame:
 
 @dataclass
 class ITADPriceInfo:
-    amount: float
-    currency: str
+    amount: float = field(default=0.0)
+    currency: str = field(default='EUR')
 
     @staticmethod
     def from_dict(obj: Any):
+        if obj is None:
+            return ITADPriceInfo()
+
         amount = obj.get("amount")
         currency = obj.get("currency")
         return ITADPriceInfo(amount, currency)
 
 @dataclass
 class ITADPrice:
-    price: ITADPriceInfo
-    regular: ITADPriceInfo
-    cut: int
-    timestamp: str
-    expiry: str
+    price: ITADPriceInfo = field(default_factory=ITADPriceInfo)
+    regular: ITADPriceInfo = field(default_factory=ITADPriceInfo)
+    cut: int = 0
+    timestamp: str = ''
+    expiry: str = ''
 
     @staticmethod
     def from_dict(obj: Any):
+        if obj is None:
+            return ITADPrice()
+
         price = ITADPriceInfo.from_dict(obj.get("price"))
         regular = ITADPriceInfo.from_dict(obj.get("regular"))
         cut = obj.get("cut")

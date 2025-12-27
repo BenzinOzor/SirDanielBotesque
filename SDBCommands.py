@@ -1,4 +1,5 @@
 import json
+import textwrap
 import discord
 from discord.ext import commands
 from IsThereAnyDeal.Client import IsThereAnyDeal
@@ -47,10 +48,10 @@ class Commands( commands.Cog ):
 		msg = f"Voici les informations que j'ai pu trouver sur \"{game_name}\"."
 		descr = "Aucun prix n'est associé à ce jeu."
 		if result.prices is not None:
-			descr = f"""Meilleur prix : **{result.prices.current} {result.prices.currency}** ({result.prices.cut}%)
+			descr = textwrap.dedent(f"""\
+			Meilleur prix : **{result.prices.current} {result.prices.currency}** ({result.prices.cut}%)
 			Prix normal : **{result.prices.regular} {result.prices.currency}**
-			Meilleur prix historique : **{result.prices.lowest} {result.prices.currency}**
-			"""
+			Meilleur prix historique : **{result.prices.lowest} {result.prices.currency}**""")
 
 		if result.total_games > 1:
 			msg += f"\r\nD'autres résultats sont disponibles, suivez [la recherche]({IsThereAnyDeal.get_search_url(game_name)})."
