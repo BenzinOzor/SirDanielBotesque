@@ -67,6 +67,7 @@ class IsThereAnyDeal:
                 regular=first_game_price.current.regular.amount,
                 lowest=first_game_price.lowest.price.amount,
                 cut=first_game_price.current.cut,
+                expiry=first_game_price.current.expiry,
                 currency=first_game_price.current.price.currency,
             )
         )
@@ -107,6 +108,7 @@ class PricesResult:
     regular: float
     lowest: float
     cut: int
+    expiry: Optional[datetime]
     currency: str
 
 @dataclass

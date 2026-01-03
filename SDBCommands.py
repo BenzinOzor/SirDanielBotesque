@@ -53,6 +53,9 @@ class Commands( commands.Cog ):
 			Prix normal : **{result.prices.regular} {result.prices.currency}**
 			Meilleur prix historique : **{result.prices.lowest} {result.prices.currency}**""")
 
+			if result.prices.expiry is not None:
+				descr += f'\r\nExpire <t:{int(result.prices.expiry.timestamp())}:R>'
+
 		if result.total_games > 1:
 			msg += f"\r\nD'autres résultats sont disponibles, suivez [la recherche]({IsThereAnyDeal.get_search_url(game_name)})."
 

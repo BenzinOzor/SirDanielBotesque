@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
-from typing import Dict, Any
+from datetime import datetime
+from typing import Dict, Any, Optional
 
 @dataclass
 class ITADGame:
@@ -38,7 +39,7 @@ class ITADPrice:
     regular: ITADPriceInfo = field(default_factory=ITADPriceInfo)
     cut: int = 0
     timestamp: str = ''
-    expiry: str = ''
+    expiry: Optional[datetime] = None
 
     @staticmethod
     def from_dict(obj: Any):
@@ -49,7 +50,12 @@ class ITADPrice:
         regular = ITADPriceInfo.from_dict(obj.get("regular"))
         cut = obj.get("cut")
         timestamp = str(obj.get("timestamp"))
-        expiry = str(obj.get("expiry"))
+
+        try:
+            expiry = datetime.fromisoformat(obj.get("expiry"))
+        except:
+            expiry = None
+
         return ITADPrice(price, regular, cut, timestamp, expiry)
 
 @dataclass
